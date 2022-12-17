@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Regression Test">
+    <test verbose="2" preserve-order="true" name="Regression By Tester">
+        <classes>
+            <!--Regression test fails because Reset App State Function is not working properly
+            in this version of application.-->
+            <class name="tests.LoginPageTest"/>
+            <class name="tests.InventoryPageTest"/>
+            <class name="tests.EndToEndFunctionalityTest"/>
+        </classes>
+    </test>
+</suite>
