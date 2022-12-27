@@ -7,6 +7,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.InventoryPage;
 import pages.LoginPage;
+import pages.ProductDetailsPage;
 
 import java.util.*;
 
@@ -14,86 +15,63 @@ public class InventoryPageTest extends Base {
 
     LoginPage loginPage;
     InventoryPage inventoryPage;
+    ProductDetailsPage productDetailsPage;
 
     @Test(priority = 0)
     public void validatingPriceLowToHigh(){
         loginPage = new LoginPage(driver);
-        loginPage.login(prop.getProperty("username"), prop.getProperty("password"));
-
-        inventoryPage = new InventoryPage(driver);
+        inventoryPage = loginPage.login(prop.getProperty("username"),
+                prop.getProperty("password"));
 
         List<WebElement> originalPrices = inventoryPage.getProductPrices();
-        List<Double> originalPricesSorted = new ArrayList<>();
+        List<Double> expectedPricesSorted = new ArrayList<>();
         for (WebElement originalPrice:originalPrices) {
-            originalPricesSorted.add(Double.parseDouble(originalPrice.getText().replace("$","")));
+            expectedPricesSorted.add(Double.parseDouble(originalPrice.getText()
+                    .replace("$","")));
         }
 
-        inventoryPage.selectOptionFromSortFunctionByVisibleText(prop.getProperty("priceLow-High"));
-        List<Double> sortedPrices = new ArrayList<>();
+        inventoryPage.selectOptionFromSortFunctionByVisibleText(
+                prop.getProperty("priceLow-High"));
+        List<Double> actualSortedPrices = new ArrayList<>();
         for (WebElement sortedPrice:inventoryPage.getProductPrices()) {
-            sortedPrices.add(Double.parseDouble(sortedPrice.getText().replace("$","")));
+            actualSortedPrices.add(Double.parseDouble(sortedPrice.getText()
+                    .replace("$","")));
         }
 
-        Collections.sort(originalPricesSorted);
-        Assert.assertEquals(sortedPrices.get(0),originalPricesSorted.get(0));
+        Collections.sort(expectedPricesSorted);
+        Assert.assertTrue(expectedPricesSorted.equals(actualSortedPrices));
     }
 
     @Test(priority = 1)
     public void validatingPriceHighToLow(){
         loginPage = new LoginPage(driver);
-        loginPage.login(prop.getProperty("username"), prop.getProperty("password"));
-
-        inventoryPage = new InventoryPage(driver);
+        inventoryPage = loginPage.login(prop.getProperty("username"),
+                prop.getProperty("password"));
 
         List<WebElement> originalPrices = inventoryPage.getProductPrices();
-        List<Double> originalPricesSorted = new ArrayList<>();
+        List<Double> expectedPricesSorted = new ArrayList<>();
         for (WebElement originalPrice:originalPrices) {
-            originalPricesSorted.add(Double.parseDouble(originalPrice.getText().replace("$","")));
+            expectedPricesSorted.add(Double.parseDouble(originalPrice.getText()
+                    .replace("$","")));
         }
 
-        inventoryPage.selectOptionFromSortFunctionByVisibleText(prop.getProperty("priceHigh-Low"));
-        List<Double> sortedPrices = new ArrayList<>();
+        inventoryPage.selectOptionFromSortFunctionByVisibleText(
+                prop.getProperty("priceHigh-Low"));
+        List<Double> actualSortedPrices = new ArrayList<>();
         for (WebElement sortedPrice:inventoryPage.getProductPrices()) {
-            sortedPrices.add(Double.parseDouble(sortedPrice.getText().replace("$","")));
+            actualSortedPrices.add(Double.parseDouble(sortedPrice.getText()
+                    .replace("$","")));
         }
 
-        Collections.sort(originalPricesSorted, Collections.reverseOrder());
-        Assert.assertEquals(sortedPrices.get(0),originalPricesSorted.get(0));
+        Collections.sort(expectedPricesSorted, Collections.reverseOrder());
+        Assert.assertTrue(expectedPricesSorted.equals(actualSortedPrices));
     }
 
     @Test(priority = 2)
-    public void validatingSocialAppsLinks() throws InterruptedException {
-        loginPage = new LoginPage(driver);
-        loginPage.login(prop.getProperty("username"), prop.getProperty("password"));
-
-        inventoryPage = new InventoryPage(driver);
-        String originalWindowId = driver.getWindowHandle();
-
-        inventoryPage.twSocialIcon().click();
-        inventoryPage.getWinHandlesForLinks();
-        Thread.sleep(5000);
-        Assert.assertEquals(driver.getTitle(),"Sauce Labs (@saucelabs) / Twitter");
-
-        driver.switchTo().window(originalWindowId);
-        inventoryPage.fbSocialIcon().click();
-        inventoryPage.getWinHandlesForLinks();
-
-        Thread.sleep(5000);
-        Assert.assertEquals(driver.getTitle(),"Sauce Labs | Facebook");
-
-        driver.switchTo().window(originalWindowId);
-        inventoryPage.igSocialIcon().click();
-        inventoryPage.getWinHandlesForLinks();
-
-        Assert.assertEquals(driver.getTitle(),"Sauce Labs | LinkedIn");
-    }
-
-    @Test(priority = 3)
     public void validatingInitialStateOfCart(){
         loginPage = new LoginPage(driver);
-        loginPage.login(prop.getProperty("username"), prop.getProperty("password"));
-
-        inventoryPage = new InventoryPage(driver);
+        inventoryPage = loginPage.login(prop.getProperty("username"),
+                prop.getProperty("password"));
 
         boolean result;
         try {
@@ -105,12 +83,11 @@ public class InventoryPageTest extends Base {
         }
     }
 
-    @Test(priority = 4)
+    @Test(priority = 3)
     public void validateResetAppStateFunction(){
         loginPage = new LoginPage(driver);
-        loginPage.login(prop.getProperty("username"), prop.getProperty("password"));
-
-        inventoryPage = new InventoryPage(driver);
+        inventoryPage = loginPage.login(prop.getProperty("username"),
+                prop.getProperty("password"));
 
         for (WebElement product:inventoryPage.getAddToCartButtons()) {
             product.click();
@@ -125,12 +102,11 @@ public class InventoryPageTest extends Base {
         }
     }
 
-    @Test(priority = 5)
+    @Test(priority = 4)
     public void validateProductsDetails() {
         loginPage = new LoginPage(driver);
-        loginPage.login(prop.getProperty("username"), prop.getProperty("password"));
-
-        inventoryPage = new InventoryPage(driver);
+        inventoryPage = loginPage.login(prop.getProperty("username"),
+                prop.getProperty("password"));
 
         List<String> list = new ArrayList<>();
         for (WebElement el:inventoryPage.getProductPrices()) {
@@ -141,16 +117,17 @@ public class InventoryPageTest extends Base {
         for (WebElement el:inventoryPage.getProductCaptions()) {
             if (i == 0){
                 el.click();
-                Assert.assertEquals(driver.findElement(By.xpath("//div[@class='inventory_details_price']")).getText(),
+                productDetailsPage = new ProductDetailsPage(driver);
+                Assert.assertEquals(productDetailsPage.getProductPrice(),
                         list.get(i));
                 i++;
-            }else {
+              }else {
                 inventoryPage.getProductCaptions().get(i).click();
-                Assert.assertEquals(driver.findElement(By.xpath("//div[@class='inventory_details_price']")).getText(),
+                Assert.assertEquals(productDetailsPage.getProductPrice(),
                         list.get(i));
                 i++;
             }
-            driver.findElement(By.id("back-to-products")).click();
+            productDetailsPage.clickOnBackToProductsButton();
         }
     }
 }

@@ -6,9 +6,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 public class InventoryPage {
 
@@ -28,15 +26,6 @@ public class InventoryPage {
     @FindBy(xpath = "//select[@class='product_sort_container']")
     private WebElement selectFunction;
 
-    @FindBy(xpath = "//a[.='Twitter']")
-    private WebElement twSocialAppIcon;
-
-    @FindBy(xpath = "//a[.='Facebook']")
-    private WebElement fbSocialAppIcon;
-
-    @FindBy(xpath = "//a[.='LinkedIn']")
-    private WebElement igSocialAppIcon;
-
     @FindBy(xpath = "//a[@class='shopping_cart_link']//span")
     private WebElement cartNumberOfProducts;
 
@@ -46,29 +35,21 @@ public class InventoryPage {
     @FindBy(xpath = "//a[@class='shopping_cart_link']")
     private WebElement cartButton;
 
-    public void getWinHandlesForLinks(){
-        Set<String> winIds = driver.getWindowHandles();
-        Iterator<String> itr = winIds.iterator();
-        while (itr.hasNext()){
-            driver.switchTo().window(itr.next());
-        }
+    @FindBy(id = "react-burger-menu-btn")
+    private WebElement burgerMenu;
+
+    @FindBy(id = "logout_sidebar_link")
+    private WebElement logoutButton;
+
+    public LoginPage logout(){
+        burgerMenu.click();
+        logoutButton.click();
+        return new LoginPage(driver);
     }
 
     public void selectOptionFromSortFunctionByVisibleText(String option){
         Select select = new Select(selectFunction);
         select.selectByVisibleText(option);
-    }
-
-    public WebElement twSocialIcon(){
-        return twSocialAppIcon;
-    }
-
-    public WebElement fbSocialIcon(){
-        return fbSocialAppIcon;
-    }
-
-    public WebElement igSocialIcon(){
-        return igSocialAppIcon;
     }
 
     public List<WebElement> getProductCaptions(){

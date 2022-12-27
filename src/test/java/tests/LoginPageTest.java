@@ -1,21 +1,22 @@
 package tests;
 
 import base.Base;
-import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.InventoryPage;
 import pages.LoginPage;
+import utils.Utilities;
 
 public class LoginPageTest extends Base {
 
     LoginPage loginPage;
     InventoryPage inventoryPage;
 
-    @Test(priority = 0)
-    public void loginWithProperParameters(){
+    @Test(priority = 0,dataProvider = "provideLoginCredentials",
+            dataProviderClass = Utilities.class)
+    public void loginWithProperParameters(String username, String password){
         loginPage = new LoginPage(driver);
-        loginPage.login(prop.getProperty("username"),prop.getProperty("password"));
+        loginPage.login(username,password);
 
         Assert.assertTrue(driver.getCurrentUrl().contains("inventory"));
     }
@@ -24,39 +25,37 @@ public class LoginPageTest extends Base {
     public void loginWithoutAnyParameters(){
         loginPage = new LoginPage(driver);
         loginPage.login("","");
-        String expectedText = "Epic sadface: Username is required";
 
-        Assert.assertEquals(loginPage.getLoginErrorMessage(),expectedText);
+        Assert.assertEquals(loginPage.getLoginErrorMessage(),
+                prop.getProperty("invalidEmailLoginErrorMessage"));
     }
 
     @Test(priority = 2)
     public void loginWithOnlyUsername(){
         loginPage = new LoginPage(driver);
         loginPage.login(prop.getProperty("username"),"");
-        String expectedText = "Epic sadface: Password is required";
 
-        Assert.assertEquals(loginPage.getLoginErrorMessage(),expectedText);
+        Assert.assertEquals(loginPage.getLoginErrorMessage(),
+                prop.getProperty("invalidPasswordLoginErrorMessage"));
     }
 
     @Test(priority = 3)
     public void loginWithOnlyPassword(){
         loginPage = new LoginPage(driver);
         loginPage.login("",prop.getProperty("password"));
-        String expectedText = "Epic sadface: Username is required";
 
-        Assert.assertEquals(loginPage.getLoginErrorMessage(),expectedText);
+        Assert.assertEquals(loginPage.getLoginErrorMessage(),
+                prop.getProperty("invalidEmailLoginErrorMessage"));
     }
 
     @Test(priority = 4)
     public void logoutTest(){
         loginPage = new LoginPage(driver);
-        loginPage.login(prop.getProperty("username"), prop.getProperty("password"));
+        inventoryPage = loginPage.login(prop.getProperty("username")
+                , prop.getProperty("password"));
+        loginPage = inventoryPage.logout();
 
-        inventoryPage = new InventoryPage(driver);
-
-        driver.findElement(By.id("react-burger-menu-btn")).click();
-        driver.findElement(By.id("logout_sidebar_link")).click();
-
-        Assert.assertTrue((loginPage.getUsername().isDisplayed()&&loginPage.getPassword().isDisplayed()));
+        Assert.assertTrue((loginPage.getUsername().isDisplayed()&&
+                loginPage.getPassword().isDisplayed()));
     }
 }

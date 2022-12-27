@@ -1,6 +1,5 @@
 package base;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -14,8 +13,8 @@ import java.util.Properties;
 
 public class Base {
 
-    public static Properties prop;
-    public static WebDriver driver;
+    public Properties prop;
+    public WebDriver driver;
 
     @BeforeMethod
     public void setup(){
@@ -26,24 +25,20 @@ public class Base {
 
         }
         if (prop.getProperty("browser").equalsIgnoreCase("Chrome")){
-            WebDriverManager.chromedriver().setup();
             driver = new ChromeDriver();
         }else if (prop.getProperty("browser").equalsIgnoreCase("Firefox")){
-            WebDriverManager.firefoxdriver().setup();
             driver = new FirefoxDriver();
         }else if (prop.getProperty("browser").equalsIgnoreCase("Edge")){
-            WebDriverManager.edgedriver().setup();
             driver = new EdgeDriver();
         }
 
-        driver.get(prop.getProperty("url"));
         driver.manage().window().maximize();
+        driver.get(prop.getProperty("url"));
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
     }
 
     @AfterMethod
-    public void tearDown() throws InterruptedException {
-        Thread.sleep(1500);
+    public void tearDown(){
         driver.quit();
     }
 }

@@ -26,10 +26,6 @@ public class LoginPage {
     @FindBy(xpath = "//div[@class='error-message-container error']//h3")
     private WebElement errorMessage;
 
-    public String getTitle(){
-        return driver.getTitle();
-    }
-
     public String getLoginErrorMessage(){
         return errorMessage.getText();
     }
@@ -42,9 +38,10 @@ public class LoginPage {
         return password;
     }
 
-    public void login(String uname, String pwd){
+    public InventoryPage login(String uname, String pwd){
         username.sendKeys(uname);
         password.sendKeys(pwd);
         loginButton.click();
+        return new InventoryPage(driver);
     }
 }

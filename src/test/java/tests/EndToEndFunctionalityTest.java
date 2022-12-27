@@ -29,17 +29,19 @@ public class EndToEndFunctionalityTest extends Base {
         cartPage.getCheckoutButton().click();
 
         checkoutStepOnePage = new CheckoutStepOnePage(driver);
-        checkoutStepOnePage.setCheckoutData("Test","Selenium","9999");
+        checkoutStepOnePage.setCheckoutData(prop.getProperty("firstName")
+                ,prop.getProperty("lastName"),
+                prop.getProperty("zip"));
 
         checkoutStepTwoPage = new CheckoutStepTwoPage(driver);
-        Assert.assertEquals(checkoutStepTwoPage.getTotalProductPrice(),expectedPrice+2.40);
+        Assert.assertEquals(checkoutStepTwoPage.getTotalProductPrice(),
+                expectedPrice+2.40);
         checkoutStepTwoPage.clickFinishButton();
 
         checkoutCompletePage = new CheckoutCompletePage(driver);
         Assert.assertTrue(checkoutCompletePage.getImageOfCompletion().isDisplayed());
 
-        String expectedCompleteText = "Checkout: Complete!";
         Assert.assertEquals(checkoutCompletePage.checkoutCompleteMessage().toLowerCase()
-                ,expectedCompleteText.toLowerCase());
+                ,"Checkout: Complete!".toLowerCase());
     }
 }
