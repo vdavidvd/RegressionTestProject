@@ -12,3 +12,6 @@ To start this project you need to have Java version 11 or higher, Maven installe
 if you want to start this project in command prompt then you need to position yourself in the project directory where pom.xml is presented and open 
 there command promp and run command mvn test. After that project will start and when all tests are finished you will get Extent Report in HTML located in 
 ExtentReports folder under project directory.
+
+This is screenshot of the report:
+![swagLabsReport](https://user-images.githubusercontent.com/97592838/212360187-27f3e241-a57f-422b-a2ae-75ed9d604dfb.PNG)
