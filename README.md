@@ -1,6 +1,6 @@
 Hi there!
 
-This is SeleniumWebDriver Hybrid Project. This project is testing the https://www.saucedemo.com/ application and its
+This is SeleniumWebDriver Hybrid Project in Java. This project is testing the https://www.saucedemo.com/ application and its
 functionalities.
 
 I selected couple of functionalities:
